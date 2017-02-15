@@ -40,41 +40,55 @@
 
       return week;
     }
-
     var addEventToList = function addeEventToList(year,weaks,eventType,eventInfo) {
-      let title = eventType + ' pick up';
-      let eventObj = {
-        title : title,
-        start : ''
-      };
-      switch (eventType) {
-        case 'Garbage':
-            eventObj.rendering = 'background';
-          break;
-
-        case 'Recycle':
-            eventObj.color = '#068A24';
-          break;
-
-        case 'Bulk':
-            eventObj.color = '#114BC7';
-          break;
-        default:
-
-      }
-      console.log(eventObj);
       // Add garbage pickup day every week
       for (var i = 1; i < weeks; i++) {
-        let eventDate = moment().year(year).week(i).day(dummyObj.trash.dayOfWeek).format("YYYY-MM-DD");
-        eventObj.start = eventDate;
+        let title = eventType + ' pick up';
+        let eventObj = {
+          title : title,
+          start : ''
+        };
+        switch (eventType) {
+          case 'Garbage':
+              eventObj.rendering = 'background';
+                eventObj.start = moment().year(year).week(i).day(dummyObj.trash.dayOfWeek).format("YYYY-MM-DD");
+            break;
+
+          case 'Recycle':
+              eventObj.color = '#068A24';
+                eventObj.start = moment().year(year).week(i).day(dummyObj.recycling.dayOfWeek).format("YYYY-MM-DD");
+            break;
+
+          case 'Yard waste':
+              eventObj.color = '#DF5800';
+                eventObj.start = moment().year(year).week(i).day(dummyObj.yardWaste.dayOfWeek).format("YYYY-MM-DD");
+            break;
+
+          case 'Bulk':
+              eventObj.color = '#114BC7';
+                eventObj.start = moment().year(year).week(i).day(dummyObj.bulk.dayOfWeek).format("YYYY-MM-DD");
+            break;
+          default:
+
+        }
         console.log(eventObj);
         if(eventInfo.schedule === 'weekly'){
           events.push(eventObj);
         }else{
-          if(eventInfo.AorB === 'a'){
-            ((i % 2) != 0) ? events.push(eventObj): 0;
+          if(eventInfo.startDate !== null){
+            if(moment(eventObj.start).isBetween(eventInfo.startDate, eventInfo.endDate)){
+              if(eventInfo.AorB === 'a'){
+                ((i % 2) != 0) ? events.push(eventObj): 0;
+              }else{
+                ((i % 2) == 0) ? events.push(eventObj): 0;
+              }
+            }
           }else{
-            ((i % 2) == 0) ? events.push(eventObj): 0;
+            if(eventInfo.AorB === 'a'){
+              ((i % 2) != 0) ? events.push(eventObj): 0;
+            }else{
+              ((i % 2) == 0) ? events.push(eventObj): 0;
+            }
           }
         }
       }
@@ -99,15 +113,32 @@
     // }
 
     var events = [];
+    var emergencyObj = {
+      'normalDay'  : "2017-04-25T00:00:00.000Z",
+      "rescheduledDay": "2017-04-26T00:00:00.000Z",
+      "reason": "Everyone in West Village Neighborhood will have their recycling delay one day because Karl will be out of town."
+    }
+    // var emergencyObj = {
+    //   'normalDay'  : "2017-12-25T00:00:00.000Z",
+    //   "rescheduledDay": "2017-12-26T00:00:00.000Z",
+    //   "reason": "Delay by one day due to Christmas holiday."
+    // }
   	var dummyObj = {
       "trash": {
-        "dayOfWeek": "friday",
+        "dayOfWeek": "monday",
         "schedule": "weekly",
         "AorB": null,
         "startDate": null,
         "endDate": null
       },
       "recycling": {
+        "dayOfWeek": "tuesday",
+        "schedule": "biweekly",
+        "AorB": "a",
+        "startDate": null,
+        "endDate": null
+      },
+      "bulk": {
         "dayOfWeek": "thursday",
         "schedule": "biweekly",
         "AorB": "a",
@@ -119,7 +150,7 @@
         "schedule": "biweekly",
         "AorB": "a",
         "startDate": "2017-04-06T00:00:00.000Z",
-        "endDate": "2017-12-07T00:00:00.000Z"
+        "endDate": "2017-12-08T00:00:00.000Z"
       }
     };
     var year = moment().year();
@@ -127,64 +158,28 @@
 
     addEventToList(year,weeks,'Garbage',dummyObj.trash);
     addEventToList(year,weeks,'Recycle',dummyObj.recycling);
+    addEventToList(year,weeks,'Bulk',dummyObj.bulk);
+    addEventToList(year,weeks,'Yard waste',dummyObj.yardWaste);
 
   	var today = moment().format();
-  	var events2 = [
-  		{
-  			title: 'Business Lunch',
-  			start: '2016-12-03T13:00:00',
-  			constraint: 'businessHours',
-  			color: '#DC6B2A'
-  		},
-  		{
-  			title: 'Garbage pick up',
-  			start: '2016-12-13T11:00:00',
-  			constraint: 'availableForMeeting', // defined below
-  			color: '#DC6B2A'
-  		},
-  		{
-  			title: 'Conference',
-  			start: '2016-12-18',
-  			end: '2016-12-20'
-  		},
-  		{
-  			title: 'Party',
-  			start: '2016-12-29',
-        rendering: 'background',
-  			color: '#DC6B2A'
-  		},
-
-  		// areas where "Meeting" must be dropped
-  		{
-  			id: 'availableForMeeting',
-  			start: '2016-12-11T10:00:00',
-  			end: '2016-12-11T16:00:00',
-  			rendering: 'background'
-  		},
-  		{
-  			id: 'availableForMeeting',
-  			start: '2016-12-13T10:00:00',
-  			end: '2016-12-13T16:00:00',
-  			rendering: 'background'
-  		},
-
-  		// red areas where no events can be dropped
-  		{
-  			start: '2016-12-24',
-  			end: '2016-12-28',
-  			overlap: false,
-  			rendering: 'background',
-  			color: '#DC6B2A'
-  		},
-  		{
-  			start: '2016-12-06',
-  			end: '2016-12-08',
-  			overlap: false,
-  			rendering: 'background',
-  			color: '#DC6B2A'
-  		}
-  	];
+    var loadEmergencyEventInfo = function loadEmergencyEventInfo(emergencyObj) {
+      console.log(moment(emergencyObj.normalDay).format("dddd, MMMM Do YYYY"));
+      document.getElementById('emergency-normal-date').innerHTML = moment(emergencyObj.normalDay).format("dddd, MMMM Do YYYY");
+      document.getElementById('emergency-new-date').innerHTML = moment(emergencyObj.rescheduledDay).format("dddd, MMMM Do YYYY");
+      document.getElementById('emergency-message').innerHTML = emergencyObj.reason;
+      document.getElementById('emergency-modal').className = 'active';
+    }
+    var displayEmergencyEvent = function displayEmergencyEvent(emergencyObj) {
+      if(Object.keys(emergencyObj).length){
+        loadEmergencyEventInfo(emergencyObj);
+      }
+    }
+    var closeDisplayEmergencyEvent = function closeDisplayEmergencyEvent() {
+      document.getElementById('emergency-modal').className = '';
+    }
   	$(document).ready(function() {
+      document.getElementById('close-emergency-modal-btn').addEventListener('click', closeDisplayEmergencyEvent);
+      displayEmergencyEvent(emergencyObj);
   		$('#calendar').fullCalendar({
   			header: {
   				left: 'prev,next',
@@ -192,7 +187,7 @@
   				right: 'month'
   			},
   			defaultDate: today,
-  			navLinks: true, // can click day/week names to navigate views
+  			navLinks: false, // can click day/week names to navigate views
   			// businessHours: true, // display business hours
   			editable: true,
   			events: events
@@ -204,12 +199,15 @@
   <style>
     @import url('https://fonts.googleapis.com/css?family=Open+Sans');
   	body {
-  		margin: 40px 10px;
+  	  margin: 0;
   		padding: 0;
   		font-family: 'Open Sans', sans-serif;
   		font-size: 14px;
   	}
-
+    main{
+      position: relative;
+      width: 100%;
+    }
   	#calendar {
   		max-width: 900px;
   		margin: 0 auto;
@@ -219,6 +217,7 @@
       display: flex;
       width: 100%;
       justify-content: center;
+      flex-wrap: wrap;
     }
     #leyend > article{
       font-weight: bold;
@@ -242,20 +241,117 @@
       background-color: #114BC7;
       color: #114BC7;
     }
+    #leyend > article:nth-child(4) > span:first-child{
+      width: 1em;
+      height: 1em;
+      background-color: #DF5800;
+      color: #DF5800;
+    }
+    #emergency-modal{
+      z-index: 5;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      background-color: rgba(0, 0, 0, 0);
+      display: flex;
+      transition: all 0.2s ease-in-out;
+    }
+    #emergency-modal.active{
+      z-index: 5;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.3);
+      display: flex;
+      transition: all 0.1s ease-in-out;
+    }
+    #emergency-modal > .emergency-container{
+      max-width: 0;
+      max-width: 0;
+      margin: auto;
+      background-color: #fff;
+      padding: 2em;
+      position: relative;
+      font-size: 1.5em;
+      transition: all 0.1s ease-in-out;
+    }
+    #emergency-modal.active > .emergency-container{
+      transition: all 0.2s ease-in-out;
+      max-width: 80%;
+      max-height: 90vh;
+      margin: auto;
+      background-color: #fff;
+      padding: 2em;
+      position: relative;
+      font-size: 1.5em;
+    }
+    #emergency-modal > .emergency-container > p{
+      display: none;
+    }
+    #emergency-modal.active > .emergency-container > p{
+      display: block;
+    }
+    #emergency-modal.active > .emergency-container > p > strong{
+      color: #FA2E31;
+    }
+    #emergency-modal.active > .emergency-container > #close-emergency-modal-btn{
+      cursor: pointer;
+      position: absolute;
+      right: -1.5em;
+      top: -1.5em;
+      width: 3em;
+      height: 3em;
+    }
+    #emergency-modal.active > .emergency-container > #close-emergency-modal-btn:hover{
+      -webkit-animation: animation-close-btn 1s ease forwards;
+	    animation: animation-close-btn 1s ease forwards;
+    }
+    @-webkit-keyframes animation-close-btn {
+      0%, 50% { -webkit-transform: rotate(0deg); }
+    	75% { -webkit-transform: rotate(450deg); }
+    	100% { -webkit-transform: rotate(405deg); }
+    }
+    @keyframes animation-close-btn {
+      0%, 50% { -webkit-transform: rotate(0deg); }
+    	75% { -webkit-transform: rotate(360deg); }
+    	100% { -webkit-transform: rotate(360deg); }
+    }
+    #close-emergency-modal-btn > img{
+      width: 100%;
+    }
   </style>
 </head>
 <body>
-	<section id='calendar'></section>
-  <section id='leyend'>
-    <article>
-      <span>ssss</span> Garbage pick up
-    </article>
-    <article>
-      <span>ssss</span> Recycle pick up
-    </article>
-    <article>
-      <span>ssss</span> Bulk pick up
-    </article>
-  </section>
+  <main>
+    <section id='calendar'></section>
+    <section id='leyend'>
+      <article>
+        <span>ssss</span> Garbage pick up
+      </article>
+      <article>
+        <span>ssss</span> Recycle pick up
+      </article>
+      <article>
+        <span>ssss</span> Bulk pick up
+      </article>
+      <article>
+        <span>ssss</span> Yard waste pick up
+      </article>
+    </section>
+    <section id="emergency-modal" class="">
+      <section class="emergency-container">
+        <article id="close-emergency-modal-btn">
+          <img src="assets/img/error.png" alt="close"></img>
+        </article>
+        <p><strong>Normal Date:</strong> <span id='emergency-normal-date'></span></p>
+        <p><strong>Reschedule Date:</strong> <span id='emergency-new-date'></span></p>
+        <p id="emergency-message"></p>
+      </section>
+    </section>
+  </main>
 </body>
 </html>
