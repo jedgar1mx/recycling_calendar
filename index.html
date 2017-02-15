@@ -248,15 +248,7 @@
       color: #DF5800;
     }
     #emergency-modal{
-      z-index: 5;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0;
-      height: 0;
-      background-color: rgba(0, 0, 0, 0);
-      display: flex;
-      transition: all 0.2s ease-in-out;
+      display: none;
     }
     #emergency-modal.active{
       z-index: 5;
@@ -288,12 +280,6 @@
       padding: 2em;
       position: relative;
       font-size: 1.5em;
-    }
-    #emergency-modal > .emergency-container > p{
-      display: none;
-    }
-    #emergency-modal.active > .emergency-container > p{
-      display: block;
     }
     #emergency-modal.active > .emergency-container > p > strong{
       color: #FA2E31;
