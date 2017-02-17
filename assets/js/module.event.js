@@ -161,35 +161,63 @@
   var closeDisplayEmergencyEvent = function closeDisplayEmergencyEvent() {
     document.getElementById('emergency-modal').className = '';
   };
-  $(document).ready(function() {
-    function jsonCallback(json){
-      console.log(json);
-    }
-
-    $.ajax({
-      type: 'GET',
-      url: "http://10.194.74.214/api/waste_schedule/changes/?format=json",
-      dataType: "jsonp",
-      success: function(response){
-        console.log(response);
-      }
-
-    });
-    var test = $.getScript("http://10.194.74.214/api/waste_schedule/changes/?format=json");
-    console.log(test);
+  // $(document).ready(function() {
+  //   function jsonCallback(json){
+  //     console.log(json);
+  //   }
+  //
+  //   $.ajax({
+  //     type: 'GET',
+  //     url: "http://10.194.74.214/api/waste_schedule/changes/?format=json",
+  //     dataType: "jsonp",
+  //     success: function(response){
+  //       console.log(response);
+  //     }
+  //
+  //   });
+  //   var test = $.getScript("http://10.194.74.214/api/waste_schedule/changes/?format=json");
+  //   console.log(test);
+  //   displayEmergencyEvent(emergencyObjArr);
+  //   $('#calendar').fullCalendar({
+  //     header: {
+  //       left: 'prev,next',
+  //       center: 'title',
+  //       right: 'month'
+  //     },
+  //     defaultDate: today,
+  //     navLinks: false, // can click day/week names to navigate views
+  //     // businessHours: true, // display business hours
+  //     editable: true,
+  //     events: events
+  //   });
+  //
+  // });
+  var startCalendar = function startCalendar() {
     displayEmergencyEvent(emergencyObjArr);
-    $('#calendar').fullCalendar({
-      header: {
-        left: 'prev,next',
-        center: 'title',
-        right: 'month'
-      },
-      defaultDate: today,
-      navLinks: false, // can click day/week names to navigate views
-      // businessHours: true, // display business hours
-      editable: true,
-      events: events
-    });
+     $('#calendar').fullCalendar({
+       header: {
+         left: 'prev,next',
+         center: 'title',
+         right: ''
+       },
+       defaultDate: today,
+       navLinks: false, // can click day/week names to navigate views
+       // businessHours: true, // display business hours
+       editable: true,
+       events: events
+     });
+  };
 
-  });
+  var startCalendarServices = function startCalendarServices() {
+    startCalendar();
+  };
+  var addresSearch = document.getElementById('address-search');
+  console.log(addresSearch);
+  if(addresSearch !== null){
+    addresSearch.addEventListener('keydown', function (e) {
+      console.log(e);
+      (e.keyCode === 13) ? startCalendarServices() : 0;
+    });
+  }
+  document.getElementById('search-btn').addEventListener('click', startCalendarServices);
 })(window);

@@ -115,3 +115,43 @@ main{
 #close-emergency-modal-btn > img{
   width: 100%;
 }
+#address-look-up{
+  display: flex;
+  width: 100%;
+  margin-bottom: 1em;
+}
+#address-look-up > .spacers{
+  width: calc((100% - 23em)/2);
+}
+#search-btn{
+  width: 3em;
+	cursor: pointer;
+  border-bottom: 1px solid #b7b9b3;
+	transition: all 0.2s ease-in-out;
+}
+#search-btn:hover > img{
+	transition: all 0.2s ease-in-out;
+}
+#search-btn > img{
+  position: relative;
+  top: 1em;
+  left: 1em;
+  width: 1.5em;
+}
+#search > form{
+	width: 100%;
+	text-align: right;
+}
+#search > label{
+	display: none;
+}
+#address-search{
+  width: 20em;
+	color: #000;
+	border: none;
+  border-bottom: 1px solid #b7b9b3;
+	height: 3em;
+	font-size: 1em;
+	padding-left: .5em;
+	width: 100%;
+}
